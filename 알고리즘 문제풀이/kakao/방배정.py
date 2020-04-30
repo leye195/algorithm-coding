@@ -3,7 +3,7 @@ def solution(k, room_number):
     for i in room_number:
         n = i
         visit = [n]
-        while n not in rooms:
+        while n in rooms:
             n = rooms[n]
             visit.append(n)
         answer.append(n)
