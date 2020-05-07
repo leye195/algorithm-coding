@@ -13,13 +13,13 @@ def solution(budgets,M):
     else:
         lo,hi=0,max(budgets)
         while lo<=hi:
-            mid,t=(lo+hi)//2,0
+            mid,total=(lo+hi)//2,0
             for b in budgets:
                 if b>mid:
-                    t+=mid
+                    total+=mid
                 else:
-                    t+=b
-            if t<=M:
+                    total+=b
+            if total<=M:
                 lo=mid+1
             else:
                 hi=mid-1

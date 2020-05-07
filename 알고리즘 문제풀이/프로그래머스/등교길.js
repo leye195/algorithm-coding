@@ -1,4 +1,8 @@
 //dp활용 문제,
+//dp[i][j]가 -1로 웅덩이인 경우 dp[i][j]=0값을 치환
+//i=0, 웅덩이가 아닐시 dp[0][j] = 1
+//j=0, 웅덩이가 아닐시 dp[i][0] = 1
+//dp[i][j] = dp[i-1][j]+dp[i][j-1]  % 1000000007;
 function solution(m, n, puddles) {
   let dp = [];
   for (let i = 0; i < n; i++) {
