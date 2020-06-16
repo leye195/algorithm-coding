@@ -32,5 +32,5 @@ def solution(build_frames):
                 answer.remove([x,y,kind])
                 if(check(answer)==False):
                     answer.append([x,y,kind])
-    answer = sorted(answer,key=lambda x: (x[0],x[1],x[2]]))
+    answer = sorted(answer,key=lambda x: (x[0],x[1],x[2]))
     return answer
