@@ -14,3 +14,4 @@ def bfs(dist,adj):
                 q.put([i,dist[i]])
 
 
+
