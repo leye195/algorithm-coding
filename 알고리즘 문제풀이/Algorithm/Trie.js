@@ -1,42 +1,39 @@
+/* 
+Trie 기본 구조
+*/
 class Node {
-  data;
-  constructor(data) {
-    this.data = data;
-    for (let i = 0; i < 26; i++) {
-      const tmp = String.fromCharCode(97 + i);
-      this[tmp] = undefined;
-    }
+  constructor(value = "") {
+    this.value = value;
+    this.child = {};
+    this.end = false;
   }
 }
 
 class Trie {
-  root;
-  constructor(root) {
-    this.root = root;
+  constructor() {
+    this.root = new Node();
   }
-  add = (word) => {
+  insert = (s) => {
     let currentNode = this.root;
-    let previouWhileChar = "";
-    for (let i = 0; i < word.length; i++) {
-      let currrentChar = word.charAt(i);
-      previouWhileChar += currrentChar;
-      if (currentNode[currrentChar] === undefined) {
-        const newNode = new Node(previouWhileChar);
-        currentNode[currrentChar] = newNode;
-        currentNode = newNode;
+    for (let i = 0; i < s.length; i++) {
+      const currentChar = s.charAt(i);
+      if (currentNode.child[currentChar] === undefined) {
+        currentNode.child[currentChar] = new Node(currentChar);
+      }
+      currentNode = currentNode.child[currentChar];
+    }
+    currentNode.end = true;
+  };
+  search = (s) => {
+    let currentNode = this.root;
+    for (let i = 0; i < s.length; i++) {
+      const currentChar = s.charAt(i);
+      if (currentNode.child[currentChar]) {
+        currentNode = currentNode.child[currentChar];
       } else {
-        currentNode = currentNode[currrentChar];
+        return "";
       }
     }
-  };
-
-  lookUp = (word) => {
-    let currentNode = this.root;
-    for (let i = 0; i < word.length; i++) {
-      let currentChar = word.charAt(i);
-      currentNode = currentNode[currrentChar];
-      if (currentNode.data === word) return currentNode;
-    }
-    return "no match";
+    return currentNode.value;
   };
 }

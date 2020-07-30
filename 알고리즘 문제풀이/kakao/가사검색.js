@@ -72,3 +72,87 @@ function solution(words, queries) {
     return answer;
 }
 */
+
+/**
+Trie 구조 활용 풀이
+아...Trie를 활용해서 푸는건 쉽지 않네...
+ */
+class Node {
+  constructor(value = "") {
+    this.value = value;
+    this.child = {};
+    this.end = false;
+    this.length = 0;
+  }
+}
+
+class Trie {
+  constructor() {
+    this.front = new Node();
+    this.back = new Node();
+  }
+  insertFront(s) {
+    let node = this.front;
+    for (let i = 0; i < s.length; i++) {
+      if (node.child[s[i]] === undefined) node.child[s[i]] = new Node(s[i]);
+      node.length++;
+      node = node.child[s[i]];
+    }
+  }
+  insertBack(s) {
+    let node = this.back;
+    for (let i = s.length - 1; i >= 0; i--) {
+      if (node.child[s[i]] === undefined) node.child[s[i]] = new Node(s[i]);
+      node.length++;
+      node = node.child[s[i]];
+    }
+  }
+  insert(s) {
+    //O(N*M)
+    this.insertFront(s);
+    this.insertBack(s);
+  }
+  search(s) {
+    //O(N)
+    if (s[0] === "?") {
+      let node = this.back;
+      for (let i = s.length - 1; i >= 0; i--) {
+        if (s[i] === "?") break;
+        if (node.child[s[i]] === undefined) return 0;
+        node = node.child[s[i]];
+      }
+      return node.length;
+    } else {
+      let node = this.front;
+      for (let i = 0; i < s.length; i++) {
+        if (s[i] === "?") break;
+        if (node.child[s[i]] === undefined) return 0;
+        node = node.child[s[i]];
+      }
+      return node.length;
+    }
+  }
+}
+
+function solution(words, queries) {
+  const trieArr = new Array(10001).fill(null),
+    answer = [];
+  for (let i = 0; i < words.length; i++) {
+    if (trieArr[words[i].length] === null)
+      trieArr[words[i].length] = new Trie();
+    trieArr[words[i].length].insert(words[i]);
+  }
+  for (let i = 0; i < queries.length; i++) {
+    const q = queries[i];
+    if (trieArr[q.length] === null) answer.push(0);
+    else answer.push(trieArr[q.length].search(q));
+  }
+  return answer;
+}
+
+solution(
+  ["frodo", "front", "frost", "frozen", "frame", "kakao"],
+  ["fro??", "????o", "fr???", "fro???", "pro?", "??", "frodo", "f?"]
+);
+
+solution(["aa", "bb"], ["aa", "bb", "ab"]);
