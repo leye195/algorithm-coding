@@ -50,7 +50,6 @@ const solution = (m, n, city_map) => {
     }
   };
   bfs(0, 0, end_x, end_y);
-  //console.log(answer);
   return answer % MOD;
 };
 solution(3, 3, [
