@@ -12,6 +12,10 @@
 ```
 input().split(" ") : ["1","2","3"]
 map(int,input().split(" )): map([1,2,3])
+
+n = sys.stdin.readline() //이것은 한줄을 통째로 입력받아 오는 함수로, input()을 사용할 때보다
+//빠른 속도를 자랑합니다
+
 ```
 
 ### 지수 표현 방식
@@ -27,6 +31,18 @@ b=set([2,3,4])
 print(a|b) //합집합
 print(a&b) //교집합
 print(a-b) //차집합
+```
+
+### 큐 구조의 경우
+
+```
+python에서 큐 구현시 deque를 활용하는게 더 좋음
+from collections import deque
+
+queue = deque()
+queue.popleft() //list의 pop(0)보다 시간 복잡도에서 우수함, deque는 내부적으로 linkedList로 되어있어
+//O(1)의 복잡도를 가짐
+queue.append()
 ```
 
 ### 람다 표현식 (익명함수로 볼 수 있음)
