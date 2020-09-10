@@ -1,0 +1,216 @@
+최단경로 알고리즘
+
+가장 짧은 결로를 찾는 알고리즘을 의미
+- 한 지점에서 다른 한 지점 까지의 최단 경로
+- 한 지점에서 다른 모든 지점까지의 최단 경로
+- 모든 지점에서 다른 모든 지점 까지의 최단 경로
+
+다익스트라 최단 경로
+- 특정 노드에서 출발해 다른 모든 지점으로 가는 최단 경로 계산
+- 음의 간선이 없을시 정상적으로 작동(현실에서의 도로는 음의 간선으로 표시되지 않는다)
+- 그리드(greedy) 알고리즘으로 분류된(매 상황에서 가장 비용이 적은 노드를 선택해 임의 과정을 반복)
+
+*동작 과정:
+1.출발 노드 설정 ex) 0번을 출발 지점을 설정 
+2.최단 거리 테이블 초기화 ex)[0,INF,INF,INF,INF]
+3.방문하지 않은 노드 중 최단 거리가 가장 짧은 노드를 선택
+4.해당 노드를 거쳐 다른 노드로 가는 비용을 계산해 최단 거리 테이블 갱신
+5.위 과정의 3번,4번을 반복
+
+예를 들어 
+A->B (비용:2)
+A->C (비용:8)
+B->C (비용:5)  
+
+초기화 한 뒤 출발 지점을 먼저 우선순위 큐에 넣어줌
+[0,INF,INF] heap:[(0,A)]
+현재 지점과 연결된 노드의 거리를 확인하고 최단 거리 테이블의 값과 확인해 갱신 
+[0,2,8] heap:[(2,B),(8,C)]
+[0,2,7] heap:[(7,C),(8,C)]
+[0,2,7] heap:[(8,C)]
+[0,2,7] heap:[]
+
+우선순위 큐:
+우선순위 큐를 구현하기 위해 힙을 활용하는데
+힙은 min-heap과 max-heap이 있으며, 최단 경로 알고리즘을 포함해 여러 알고리즘에서 사용된다.
+----------------------
+|방식 | 삽입시간 | 삭제시간|
+----------------------
+|리스트|  O(1) |  O(N) |
+----------------------
+| 힙  | O(lgN)| O(lgN)|
+----------------------
+
+```
+ex) 오름차순 힙 정렬, min-heap
+import heap
+def heapsort(iterable): 
+    h,result = [],[]
+    for value in iterable:
+        heapq.heappush(h,value)
+    for i in range(len(h)):
+        result.append(heapq.heappop(h))
+    return result
+print(heapsort([3,1,2,5,4])) # 1 2 3 4 5
+
+ex) 내림차순 힙 정렬, max-heap
+def heapsort(iterable):
+    h,result = [],[]
+    for value in iterable:
+        heapq.heappush(h,-value)
+    for i in range(len(h)):
+        result.append(-heapq.heappop(h))
+    return result
+```
+
+
+```
+ex) 우선순위 큐 활용 코드 : 복잡도 O(ElgV)
+node를 하나씩 꺼내 검사하는 반복문은 노드의 개수 V 이상의 횟수로 처리하지 않는다.
+- 결과적으로 우선순위 큐에서 꺼낸 노드와 연결된 다른 노드들을 확인하는 총 횟수는 최대 간선의
+  갯수 만큼 연산이 수행될수 있다.
+- 직관적으로 전체 과정은 E개의 원소를 우선순위 큐로 넣었다가 모두 빼내는 연산과 매수 유사함
+  시간복잡도를 O(ElgE)로 판단 가능하며, 중복 간선을 포함하지 않는 경우 O(ElgV)로 정리 가능
+
+import heapq 
+def dijkstra(graph,s):
+    dist_table=[INF]*len(graph)
+    dist_table[s],h = 0,[]
+    heapq.heapqpush(h,(dist[s],s))
+    while h: #비어 있지 않다면
+        dist,p = heapq.heappop(h)
+        if dist>dist_table[p]: #이미 처리된 적 있어 무시
+            continue
+        for to in range(len(graph[p])):
+            if(graph[p][to] and dist_table[to]>graph[p][to]+dist_table[p]):
+                dist_table[to] = graph[p][to]+dist_table[p]
+                heapq.heappush(h,(dist_table[to],to))     
+```       
+
+플로이드 워셜
+모든 노드에서 다른 모든 노드로 가는 최단 경로를 계산
+마찬가지로 단계별로 거쳐가는 노드를 기준으로 알고리즘 수행
+- 매 단계마다 방문하지 않은 노드 중 최단 거리를 갖는 노드를 찾는 과정이 불필요함
+- 플로이드 워셜은 2차원 테이블에 최단 거리정보를 저장
+- DP 유형에 포함된다.
+
+각 단계마다 특정 노드k를 거쳐가는 경우를 확인 
+- a->b로 가는 최단 거리보다 a에서 k를 거쳐 b로 가는 거리가 더 짧은지 검사
+점화식: Dab =min(Dab,Dak+Dkb)
+```
+ex) 구현 O(n^3), 보통 n이 500 이하인 경우
+INF = int(1e9)
+dist=[
+    [0,4,INF,6],
+    [3,0,7,INF],
+    [5,INF,0,4],
+    [INF,INF,2,0]
+]
+for k in range(len(dist)):
+    for i in range(0,len(dist)):
+        for j in range(0,len(dist)):
+            if dist[i][j]>dist[i][k]+dist[k][j]:
+                dist[i][j] = dist[i][k]+dist[k][j]
+```
+
+기타 그래프 이론
+
+[서로소 조합(disjoint)]
+- 공통 원소가 없는 두 조합 의미
+- disjoint 자료구조는 서로소 부분 집합들로 나누어진 원소들의 데이터를 처리하기 위한 자료구조
+- disjoint 자료구조는 2가지 종류로 나눠진다 
+1.union: 두 개 원소가 포함된 집합을 하나로 합침
+2.find: 특정 원소가 속한 집합이 어떤 집합인지 알려줌
+*union-find라고도 불림
+```
+ex) 기본적 구현
+def find(p,x): #원소가 속한 집합
+    if(p[x]!=x):
+        return find(p,p[x])
+    return x
+
+def union(p,x,y): #두 원소가 속한 집합 합치기
+    a = find(p,x)
+    b = find(p,y)
+    if a<b:
+        parent[b] = a
+    else:
+        parent[a] = b
+
+최적화 구현, union연산이 편향되게 이루어지는 경우 find가 비효울적으로 작동한다
+최악의 경우 find함수가 모든 노드를 다 확인하게 되어 O(V)의 시간복잡도를 가지게된다.
+def find(p,x): 
+#find를 최적화하기 위한 방법으로 경로 압축(Path Compression)을 활용할수 있다
+#찾기 함수를 재귀적으로 호출한 뒤에 부모 테이블 값을 바로 갱신한다.
+    if(p[x]!=x):
+        p[x]=find(p[x],p)
+    return p[x]
+```
+
+*서로소 집합을 활용한 cycle 판별
+- 방향 그래프에서의 cycle 판별은 DFS 이용해 판별가능
+1. 각 간선을 하나씩 확인해 두 노드의 루트를 확인
+--루트 노드가 다를 경우 합집합 수행
+--루트 노드가 같을 경우 cycle 발생 
+2. 그래프에 포함되있는 모든 간선에 대해 1번 과정 반복 
+```
+ex) 사이클 판별
+def find(p,x):
+    if(p[x]!=x):
+        p[x]=find(p,p[x])
+    return p[x]
+def union(p,x,y):
+    x,y = find(p,x),find(p,y)
+    if x<y:
+        p[y]=x
+    else:
+        p[x]=y
+v,e = map(int,input.split())
+p=[0]*v
+for i in range(v):
+    p[i]=i
+cycle = False
+for i in range(e):
+    a,b = map(int,input().split())
+    if find(p,a)==find(p,b):
+        cycle=True
+        break
+    else:
+        union(p,a,b)
+if cycle:
+    print("cycle")
+else:
+    print("no cycle")
+``` 
+
+[신장 트리]
+그래프에서 모든 노드를 포함하며 사이클이 존재하지 않는 부분 그래프
+-조건: 모든 노드가 포함되어 서로 연결되어 있으며 사이클이 존재하지 않음
+
+*최소 신장 트리
+최소한 비용으로 구성되는 신장트리 
+- 크루스칼 알고리즘은 대표적인 알고리즘으로 그리디로 분류된다. 
+- 과정
+1.간선 데이터를 비용에 따라 오름차순으로 정렬
+2.간선을 하나씩 확인하며 현재 간선이 사이클을 발생시키는지 확인
+--사이클 발생 안할시 최소 신장트리에 포함
+--사이클 발생시 무시
+3.모든 간선에 대해 2번을 반복
+```
+ex) 크루스칼 O(ElgE)
+import heapq
+result,q=0,[]
+v,e = map(int,input().split())
+p=[0]*v
+for i in range(v):
+    p[i]=i
+for i in range(e):
+    a,b,d = map(int,input().split())
+    heapq.heappush(q,(d,a,b))
+while q:
+    d,x,y = heapq.heappop(h)
+    if find(p,x)!=find(p,y):
+        union(p,x,y)
+        result+=d
+print(result)
+```
