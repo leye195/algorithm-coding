@@ -1,0 +1,26 @@
+기타 알고리즘
+
+- 소수 판별
+```
+import math
+def is_prime(x):
+    # 2부터 x의 제곱근 까지 모든 수를 체크
+    for i in range(2,int(math.sqrt(x))+1):
+        if x%i == 0: #x가 해단 수로 나누어 떨어진다면 소수가 아님
+            return False
+    return True
+```
+
+- 에라토스테네스의 체
+```
+import math
+def get_primes(n):
+    arr=[1 for i in range(n+1)]
+    for i in range(2,int(math.sqrt(n))+1):
+        if arr[i]:
+            j=2
+            while i*j<=n:
+                arr[i*j] = 0
+                j+=1
+```
+
