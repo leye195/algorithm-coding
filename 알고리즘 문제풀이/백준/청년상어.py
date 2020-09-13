@@ -36,7 +36,6 @@ def all_possible(arr,c_x,c_y): #먹을수 있는 물고기 좌표 추출
             if arr[c_x][c_y][0]!=-1:#좌표에 물고기가 존재
                 position.append((c_x,c_y))   
     return position
-
 def dfs(arr,x,y,total):
     global result
     arr = copy.deepcopy(arr)
