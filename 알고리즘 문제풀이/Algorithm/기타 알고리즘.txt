@@ -1,6 +1,62 @@
 기타 알고리즘
 
+- 위상 정렬
+사이클이 없는 방향 그래프의 모든 노드를 방향성에 거스리지 않도록 순서대로 나열하는 것
+ex) 선수과목을 고려한 학습 순서
+
+--진입차수(indegree):특정 노드로 들어로는 간선 개수 
+--진출차수(outdegree):특정 노드에서 나가는 간선 개수
+ex)
+1 ----> 2
+|       |
+|--->3<-| 
+1의 indegree:0, outdegree:2
+2의 indegree:1, outdegree:1
+3의 indegree:2, outdegree:0
+
+과정:
+큐를 활용하는 위상정렬 알고리즘의 동작은 다음과 같다
+1. 진입차수가 0인 모든 노드를 큐에 삽입
+2. 큐가 빌 때까지 다은 과정 반복
+--1.큐에서 원소를 꺼내 해당 노드에서 나가는 간선을 그래프에서 제거
+--2.새롭게 진입차수가 0이 된 노드를 큐에 삽입
+
+*순환하지 않는 방향 그래프에 대해서만 수행가능혀마
+*여러가지 답이 존재 할 수 있다.
+-->한 단계에서 큐에 들어가는 원소가 2개 이상일 경우 여러가지 답 존재가능
+-->모든 원소를 방문하기 전에
+
+```
+def topology_sort(graph):
+    q=deque()
+    result = []
+    indegree= [0]*len(graph)
+    for i in range(len(graph)):
+        for j in range(len(graph)):
+            if graph[i][j]:
+                indegree[j]+=1
+
+    for i in len(indegree):
+        if indegree[i]==0:
+            q.append(i)
+    while q:
+        now = q.popleft()
+        result.append(now)
+        for i in len(graph[now]):
+            if graph[now][i] and indegree[i]>0:
+                indegree[i]-=1
+                if indegree[i]==0:
+                    q.append(i)
+    for i in result:
+        print(i,end=' ')
+```
+
 - 소수 판별
+*소수는 2보다 큰 자연수 중 1과 본인을 제외한 자연수로 나누어떨어지지 않는 자연수
+
+모든 약수들이 가운데 약수를 기준으로 곱셈 연산에 대해서 대칭을 이루고 있기에
+특정한 자연수의 모든 약수를 찾을때 가운데 약수(제곱근)까지만 확인해주면 됨
+
 ```
 import math
 def is_prime(x):
@@ -12,9 +68,15 @@ def is_prime(x):
 ```
 
 - 에라토스테네스의 체
+*소수 판별
+과정:
+1. 2~n 까지 모든 자연수 나열
+2. 남은 수 중에서 아직 처리되지 않은 가장 작은 수 i를 찾는다
+3. 남은 수 중에서 i의 배수를 모두 제거 (i 제외)
+4. 더 이상 반복할 수 없을 때 까지 2번 3번 반복  
 ```
 import math
-def get_primes(n):
+def get_primes(n): O(nlgnlg)
     arr=[1 for i in range(n+1)]
     for i in range(2,int(math.sqrt(n))+1):
         if arr[i]:
@@ -23,4 +85,7 @@ def get_primes(n):
                 arr[i*j] = 0
                 j+=1
 ```
+*다수의 소수를 찾는 문제에서는 효과적으로 사용가능 하지만 각 자연수에 대한 소수 판별 여부를 저장해야해
+메모리가 많이 필요함
+*10억이 소수인지 판별해야 되는 경우 활용 하기 어렵고 그냥 소수 판별을 해주는게 좋음
 

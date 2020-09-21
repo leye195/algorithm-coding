@@ -78,3 +78,62 @@ result = list(map(lambda a,b:a+b,list1,list2)) //[7,9,11,13,6]
   arr에 동일한 값이 존재할 경우 동일 값 위치 바로 뒤 반환
 
 - collections: deque, Counter 등의 유용 자료구조를 포함
+
+### 웹 요청
+
+```
+import requests
+url = ""
+r = requests.get(url=target)
+print(r.text) #or r.json()
+```
+
+kakao 2차의 경우 REST API 호출과 JSON format 데이터를 파싱해야 된다.</br>
+REST (Representational State Transfer)</br>
+
+- 자원: URI 이용
+- 행위: HTTP 메서드 이용
+- 표현: payload 이용
+
+```
+URI: "http://www.example.com/users"
+HTTP METHOD: "POST"
+Payload: {"id":"","password":""}
+```
+
+```
+import json
+user={
+  "id":"",
+  "password":"",
+  "age":0,
+  "hobby":[]
+}
+json_data = json.dumps(user,indent=4)
+print(json_data)
+
+# json.loads(jsonString) 문자열을 Python 타입으로 변경 가능
+or
+
+import json
+user={
+  "id":"",
+  "password":"",
+  "age":0,
+  "hobby":[]
+}
+with open("user.json","w",encoding="utf-8") as file:
+  json_data = json.dump(user,file,indent=4)
+```
+
+```
+회원 정보처리 예제
+target = "https://jsonplaceholder.typicode.com/users"
+response = requests.get(url=target)
+
+data = response.json()
+name_list = []
+for user in data:
+  name_list.append(user["name"])
+print(name_list)
+```

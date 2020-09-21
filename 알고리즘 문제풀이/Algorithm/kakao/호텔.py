@@ -1,3 +1,5 @@
+import requests
+r=req
 
 # 정확상 통과, 효율 실패  
 def solution1(k, room_number):
