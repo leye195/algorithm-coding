@@ -1,0 +1,43 @@
+퀵 셀렉션(Quick Selection) 알고리즘
+
+어떠한 임의의 숫자배열이 있다고 할 때 k번째로 작은 값 혹은 큰 값을 찾을 때 사용할 수 있는 알고리즘.
+
+간단하게 찾으려면 정렬 알고리즘을 활용하면 되며 시간 복잡도가 퀵정렬의 경우 O(lgn)~O(n^2)을 가지게 됨
+
+Quick Selection을 활용하게 되면 O(n) 안에 k번째 숫자를 찾아 낼 수 있음.
+
+알고리즘 내부에서는 퀵 정렬을 활용하며 파티션을 활용해 k와 얼마나 차이가 나는지 확인, 파티션 함수가 리턴하는 값 p와 k를 비교하면서 
+그 결과에 따라 파티션을 어떻게 나눌지 결정하기 때문에 모든 부분 배열을 쪼개서 정렬하는 것이 아닌 k를 만족하는 범위 안에 있는 부분 배열만 
+파티션 함수를 호출한다. 
+
+과정:
+- 1) pivot의 인덱스가 k와 같은 경우: 인덱스 값 리턴
+- 2) pivot의 인덱스가 k보다 작은 경우: pivot + 1 부터 마지막 인덱스 까지 다시 partiion 함수 실행
+- 3) pivot의 인덱스가 k보다 큰 경우: 첫 인덱스 부터 pivot - 1 까지 다시 partiion 함수 실행
+* pivot 결정 방식은 보통 첫 번째, 중간 혹은 마지막 중 하나로 결졍
+
+```
+def partion(list,left,right):
+    pivot = list[left]
+    lo,hi = left+1,right
+    while(lo <= hi):
+        while(list[lo] <= pivot and lo <= right):
+            lo+=1
+        while(list[hi] >= pivot and hi >= (left+1)):
+            hi-=1
+        if(lo <= hi):
+            list[lo],list[hi] = list[hi],list[lo]
+    list[left],list[hi] = list[hi],list[left]
+    return hi
+
+def quickSelect(list,left,right,k):
+    nth = partiion(list,left,right)
+
+    if nth == k:
+        return nth
+    elif nth < k:
+        quickSelect(list,nth+1,right,k)
+    else:
+        quickSelect(list,left,nth-1,k)
+
+```
