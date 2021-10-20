@@ -265,3 +265,96 @@ const minEatingSpeed = (piles,H) => {
   return left;
 }
 ```
+
+Minimum Number of Days to Make m Bouquets
+
+```
+Given an integer array bloomDay, an integer m and an integer k. We need to make m bouquets. To make a bouquet, you need to use k adjacent flowers from the garden. The garden consists of n flowers, the ith flower will bloom in the bloomDay[i] and then can be used in exactly one bouquet. Return the minimum number of days you need to wait to be able to make m bouquets from the garden. If it is impossible to make m bouquets return -1.
+
+Input: bloomDay = [1,10,3,10,2], m = 3, k = 1
+Output: 3
+Explanation: Let's see what happened in the first three days. x means flower bloomed and _ means flower didn't bloom in the garden.
+We need 3 bouquets each should contain 1 flower.
+After day 1: [x, _, _, _, _]   // we can only make one bouquet.
+After day 2: [x, _, _, _, x]   // we can only make two bouquets.
+After day 3: [x, _, x, _, x]   // we can make 3 bouquets. The answer is 3.
+
+
+Input: bloomDay = [1,10,3,10,2], m = 3, k = 2
+Output: -1
+Explanation: We need 3 bouquets each has 2 flowers, that means we need 6 flowers. We only have 5 flowers so it is impossible to get the needed bouquets and we return -1.
+
+```
+
+```
+const minDays = (bloomDay,m,k) => {
+    const feasible = (day) => {
+        let bouquets = 0;
+        let flowers = 0;
+        for(let i=0;i<bloomDay.length;i++) {
+            const bloom = bloomDay[i];
+            if(bloom<=day) {
+                boquets+= Math.floor((flowers+1)/k);
+                flowers = (flowers + 1)%k;
+            } else {
+                flowers = 0;
+            }
+        }
+        return boquets >= m
+    }
+
+    if(bloomDay.length < m*k) return -1;
+    let left = 1;
+    let right = Math.max(...bloomDay);
+
+    while(left < right) {
+        const mid = left + Math.floor((right - left)/2);
+        if(feasible(mid)) right = mid;
+        else left = mid+1;
+    }
+    return left;
+}
+```
+
+Kth Smallest Number in Multiplication Table
+
+```
+Nearly every one have used the Multiplication Table. But could you find out the k-th smallest number quickly from the multiplication table? Given the height m and the length n of a m * n Multiplication Table, and a positive integer k, you need to return the k-th smallest number in this table.
+
+Input: m = 3, n = 3, k = 5
+Output: 3
+Explanation:
+The Multiplication Table:
+1	2	3
+2	4	6
+3	6	9
+
+The 5-th smallest number is 3 (1, 2, 2, 3, 3).
+
+```
+
+```
+const findKthNumber = (m,n,k) => {
+    const enough = (num) => {
+      let count = 0;
+
+      for(let i=1;i<m+1;i++){
+        let add = Math.min(Math.floor(num/i,n));
+        if(!add) break;
+        count+=add;
+      }
+      return count >= num;
+    }
+
+    let left = 1;
+    let right = m*n;
+
+    while(left < right) {
+        const mid = left + Math.floor((right-left)/2);
+
+        if(enough(mid)) right = mid;
+        else left = mid+1;
+    }
+    return left;
+}
+```
