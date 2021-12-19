@@ -1,4 +1,5 @@
 /**
+ * https://leetcode.com/problems/maximize-sum-of-array-after-k-negations/
  * @param {number[]} nums
  * @param {number} k
  * @return {number}
@@ -13,3 +14,5 @@ var largestSumAfterKNegations = function (nums, k) {
   }
   return nums.reduce((x, y) => x + y, 0);
 };
+
+// min-heap
