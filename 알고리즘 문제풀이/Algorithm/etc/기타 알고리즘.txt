@@ -57,7 +57,24 @@ def topology_sort(graph):
 모든 약수들이 가운데 약수를 기준으로 곱셈 연산에 대해서 대칭을 이루고 있기에
 특정한 자연수의 모든 약수를 찾을때 가운데 약수(제곱근)까지만 확인해주면 됨
 
+기본구현 방법은 2 ~ x-1 까지 모든 자연수에 대해 연산을 수행하기 때문에 O(x) 시간복잡도를 가진다
+시간 복잡도가 선형적으로 증가
 ```
+const isPrime = (x) => {
+    for(let i=2;i<x;i++) {
+        if(x%i===0) return false;
+    }
+    return true;
+}
+```
+
+모든 약수가 가운데 약수를 기준으로 곱셈 연산에 대해 대칭을 이루고 있음 
+- 16의 경우 약수는 1,2,[4],8,16 
+  - 2*8은 8*2과 대칭한다.
+- 특정 자연수의 모든 약수를 찾을 때 가운데 약수(제곱근)까지만 확인 하면된다. O(N^1/2)
+
+```
+// python
 import math
 def is_prime(x):
     # 2부터 x의 제곱근 까지 모든 수를 체크
@@ -65,10 +82,20 @@ def is_prime(x):
         if x%i == 0: #x가 해단 수로 나누어 떨어진다면 소수가 아님
             return False
     return True
+
+// js
+const isPrime = (x) => {
+    for(let i=2;i<Math.floor(Math.sqrt(x))+1;i++) {
+        if(x%2===0) return false;
+    }
+    return true;
+}
+
 ```
 
-- 에라토스테네스의 체
-*소수 판별
+- 에라토스테네스의 체 O(nlgnlg)
+*다수의 소수 판별, 특정 수 범위 안에 존재하는 모든 소수를 찾아야 할 경우 사용
+
 과정:
 1. 2~n 까지 모든 자연수 나열
 2. 남은 수 중에서 아직 처리되지 않은 가장 작은 수 i를 찾는다
@@ -76,7 +103,7 @@ def is_prime(x):
 4. 더 이상 반복할 수 없을 때 까지 2번 3번 반복  
 ```
 import math
-def get_primes(n): O(nlgnlg)
+def get_primes(n): 
     arr=[1 for i in range(n+1)]
     for i in range(2,int(math.sqrt(n))+1):
         if arr[i]:
@@ -84,6 +111,20 @@ def get_primes(n): O(nlgnlg)
             while i*j<=n:
                 arr[i*j] = 0
                 j+=1
+
+const getPrimes = (n) => {
+    const arr = new Array(n+1).fill(1);
+    for(let i=2;i<Math.floor(Math.sqrt(n))+1;i++) {
+        if(arr[i]) {
+            let j = 2;
+
+            while(i*j<=n) {
+                arr[i*j] = 0;
+                j++;
+            }
+        }
+    }
+}
 ```
 *다수의 소수를 찾는 문제에서는 효과적으로 사용가능 하지만 각 자연수에 대한 소수 판별 여부를 저장해야해
 메모리가 많이 필요함

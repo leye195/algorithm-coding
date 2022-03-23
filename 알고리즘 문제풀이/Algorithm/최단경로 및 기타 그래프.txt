@@ -115,13 +115,32 @@ for k in range(len(dist)):
 
 기타 그래프 이론
 
-[서로소 조합(disjoint)]
+[서로소 조합(disjoint set)]
 - 공통 원소가 없는 두 조합 의미
+  - {1,2}와 {2,3}는 서로소 관계가 아니다
+  - {1,2}와 {3,4}는 서로소 관계이다
 - disjoint 자료구조는 서로소 부분 집합들로 나누어진 원소들의 데이터를 처리하기 위한 자료구조
 - disjoint 자료구조는 2가지 종류로 나눠진다 
-1.union: 두 개 원소가 포함된 집합을 하나로 합침
-2.find: 특정 원소가 속한 집합이 어떤 집합인지 알려줌
+
+1.union: 두 개 원소가 포함된 집합을 하나로 합침 (합집합)
+  (1)합집합 연산을 확인하여, 서로 연결된 두 노드 A,B를 확인한다.
+    > A와 B의 루트 노드 A', B'를 각 각 찾는다 
+    > A'를 B'의 부모 노드로 설정한다
+  (2)모든 합집합 연산을 처리 할 때까지 1번을 반복 
+
+```
+p [1,2,3,4,5,6]
+
+union(1,4) -> [1,2,3,1,5,6]
+union(2,3) -> [1,2,2,1,5,6]
+union(2,4) -> [1,1,2,1,5,6]
+union(5,6) -> [1,1,2,1,5,5]
+
+```
+
+2.find: 특정 원소가 속한 집합이 어떤 집합인지 알려줌 (찾기)
 *union-find라고도 불림
+
 ```
 ex) 기본적 구현
 def find(p,x): #원소가 속한 집합
@@ -136,6 +155,17 @@ def union(p,x,y): #두 원소가 속한 집합 합치기
         parent[b] = a
     else:
         parent[a] = b
+
+p = new Array(v).fill(0);
+for(let i=0;i<v;i++)
+  p[i] = i;
+
+for(let i=0;i<arr.length;i++) {
+  const [a,b] = arr[i];
+  union(p,a,b);
+}
+
+
 
 최적화 구현, union연산이 편향되게 이루어지는 경우 find가 비효울적으로 작동한다
 최악의 경우 find함수가 모든 노드를 다 확인하게 되어 O(V)의 시간복잡도를 가지게된다.
@@ -179,7 +209,7 @@ for i in range(e):
         union(p,a,b)
 if cycle:
     print("cycle")
-else:
+else:, 
     print("no cycle")
 ``` 
 
@@ -197,7 +227,7 @@ else:
 --사이클 발생시 무시
 3.모든 간선에 대해 2번을 반복
 ```
-ex) 크루스칼 O(ElgE)
+ex) 크루스칼 O(ElgE), 가장많은 시간을 요구하는 곳은 간선 정렬을 수행하는 부분
 import heapq
 result,q=0,[]
 v,e = map(int,input().split())
@@ -214,6 +244,64 @@ while q:
         result+=d
 print(result)
 ```
+
+[위상정렬]
+
+모든 노드를 확인하며 각 노드에서 나가는 간선을 차례대로 제거하기 때문에 O(V+E)
+
+**사이클이 없는 방향 그래프(DAG)**의 모든 노드를 방향성에 거스르지 않도록 순서대록 나열하는 것을 의미한다
+
+ex) 학습순서 자료구조 -> 알고리즘 -> 고급알고리즘  
+
+- 진입차수 (indegree): 특정한 노드로 들어오는 간선의 갯수
+- 진출차수 (outdegree): 특정한 노드에서 나가는 간선의 갯수
+
+기본적을 BFS를 이용해서 풀이 할 수 있음
+
+1. 진입차수 (indegree)가 0인 모든 노드를 큐에 넣는다
+2. 큐가 빌 때까지 다음 과정을 수행한
+  - 큐에서 원소를 꺼내 해당 노드에서 나가는 간선을 그래프에서 제거
+  - 새롭게 진입차수가 0이 된 노드를 큐에 넣는다
+
+```
+
+const result = [];
+const q = [];
+
+for(let i=0;i<n;i++) {
+    if(indegree[i] === 0) {
+        q.push(i);
+    }
+}
+
+while(q.length > 0) {
+    const cur = q.shift();
+    result.push(cur);
+
+    for(let i=0;i<graph[cur].length;i++) {
+        const idx = graph[cur][i];
+        indegree[idx]-=1;
+
+        if(indegree[idx] === 0) {
+            q.push(idx);
+        }
+    }
+}
+
+console.log(result);
+
+
+
+
+```
+
+
+
+모든 원소를 방문하기 전에 큐가 빈다면 사이클이 존재한다고 판단 할 수 있다.
+- 사이클이 포함된 원소 중에서 어떤한 원소도 큐에 들어가지 못한다.
+- stack을 활용한 DFS를 이용해 위상 정렬을 수행 할 수 도 있다.
+ 
+
 
 [새그먼트 트리] O(lgN)
 여러개의 데이터가 연속적으로 존재할때 특정한 범위의 데이터의 합을 구하는 방법
