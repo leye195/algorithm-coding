@@ -1,0 +1,66 @@
+Segment Tree
+
+세그먼트 트리는 "구간을 저장하기 위한 트리"다.
+
+여러개의 데이터가 연속적으로 존재 할 때 특정 범위의 데이터의 합을 구하는 방법에 사용 할 수 있다.
+
+트리 구조의 특정상 O(lgN)의 시간복잡도가 되며, 선형 방법으로 단순히 계산하는것 보다 빠르게 계산 할 수 있다.
+
+[1,9,3,8,4,5,5,9,10,3,4,5]
+
+구간 합 트리 구성
+
+- 최상단 노드에는 전체 원소를 더한 값이 들어간다.
+- 두번째 노드는 인덱스 0~5, 세번쨰 노드는 6~11 까지의 원소를 더한 값을 가진다.
+  > 데이터 범위를 반씩 분할하여 그 구간의 합들을 저장하는 설정
+
+[66,30,36,13,17,24,12,19,3,12,5,14,10,7,5,1,9,8,4,5,9,3,4]
+
+```
+const init = (start,end,node) => {
+    if(start === end) return tree[node] = arr[start];
+    
+    const mid = Math.floor((start+end)/2);
+    return tree[node] = init(start,mid,node*2) + init(mid+1,end,node*2+1);
+}
+```
+- 데이터의 개수가 N일때 N보다 큰 가장 가까운 N의 제곱수를 구한뒤 그것의 2배까지 미리 배열 크기를 만들어놓아야 한다
+  > 실제로는 데이터의 개수 N에 4를 곱한 크키 만큼 미리 구간합 트리의 공간을 할당한다
+
+구간의 합을 구하는 경우 [범위 안에 있는 경우]에 한해서 구해주면 됩니다.
+
+```
+const sum = (start,end,node,left,right) => {
+    // 범위 밨에 있는 경우
+    if(left > end || right < start) return 0;
+
+    // 범위 안에 있는 경우
+    if(left <= start && right <= end) return tree[node]; 
+
+    // 두 부분을 나누어 합을 구하기
+    const mid = Math.floor((start+end)/2);
+
+    return sum(start,mid,node*2,left,right) + sum(mid+1,end,node*2+1,left,right);
+}
+```
+
+특정 원소의 값을 수정하는 경우
+
+해당 원소를 포함하고 있는 모든 구간 합 노드들을 갱신해주면 된다.
+
+수정할 노드로는 '범위 안에 있는 경우' 에 한해서 수정을 해주면된다.
+
+```
+const update = (start,end,node,index,val) => {
+    if(index < start || inde > end) return;
+
+    const dif = val - treeNode[index]; 
+    treeNode[index] += dif;
+
+    if(start === end) return;
+
+    const mid = Math.floor((start+end)/2);
+    update(start,mid,node*2,index,val);
+    update(mid+1,end,node*2+1,index,val);
+}
+```
