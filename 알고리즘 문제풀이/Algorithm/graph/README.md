@@ -123,3 +123,52 @@ const bfs = (graph,visited,v) => {
 
 bfs(graph,visited,1);
 ```
+
+---
+
+### BIT (펜윅 트리)
+
+Binary Indexed Tree는 2진법 인덱스 구조를 활용해 구간 합 문제를 효과적으로 해결해줄수 있는 자료구조
+
+트리 구조 만들기
+
+- k&-k
+- 0이 아닌 마지막 비트 = 내가 저장하고 있는 값들의 개수
+
+[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
+[1,2,3,4,5,6,7,8][9,10,11,12,13,14,15,16]
+[1,2,3,4][5,6,7,8][9,10,11,12][13,14,15,16]
+[1,2][3,4][5,6][7,8][9,10][11,12][13,14][15,16]
+[1][][3][][5][][7][][9][][11][][13][][15][]
+
+- 특정값을 변경할 때: 0 이 아닌 마지막 비트만큼 더하면서 구간들의 값을 변경
+- 1 ~ n 까지의 합: 0 이 아닌 마지막 비트를 빼면서 구간들의 핪 계산
+
+```
+const arr = new Array(n+1).fill(0);
+const tree = new Array(n+1).fill(0);
+
+# i번째 수까지의 누적 합 계산 함수
+const prefixSum = (i) => {
+    let result = 0;
+    while(i > 0) {
+        result+=tree[i];
+        i-=(i&-i);
+    }
+    return result;
+}
+
+# i번째 수를 dif 만큼 더하는 함수
+const update = (i,diff) => {
+    while(i<=n) {
+        tree[i] += diff;
+        i+=(i&-i);
+    }
+}
+
+# start 부터 end 까지 구간 합을 계산하는 함수
+const intervalSum = (start,end) => {
+    return prefixSum(end) - prefixSum(start-1);
+}
+
+```
