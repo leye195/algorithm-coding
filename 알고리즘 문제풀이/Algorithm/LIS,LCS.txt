@@ -120,18 +120,31 @@ if(i === 0 || j === 0) {
 
 ```
 const result = [];
+const LCS = [];
+
 let x = n-1;
 let y = m-1;
 
-while(LCS[x][y]!==0) {
-    if(LCS[x][y] !== LCS[x-1][y] && LCS[x][y] !== LCS[x][y-1]) {
-        result.unshift(string[x]);
-        x = x-1;
-        y = y-1;
-    } else if(LCS[x][y] === LCS[x-1][y]) {
-        x = x-1;
-    } else if(LCS[x][y] === LCS[x][y-1]) {
-        y = y-1;
+for(let i=0;i<n;i++) {
+    const tmp = [];
+    for(let j=0;j<m;j++) {
+        tmp.push(0);
+    }
+    LCS.push(tmp);
+}
+
+for(let i=0;i<n;i++) {
+    for(let j=0;j<m;j++) {
+        if(i==0 || j==0) {
+            LCS[i][j] = 0;
+        } else if(s1[i] === s2[j]) {
+            LCS[i][j] = LCS[i-1][j-1]+1;
+        } else {
+            LCS[i][j] = LCS[i-1][j] > LCS[i][j-1] ? LCS[i-1][j] : LCS[i][j-1];
+        }
     }
 }
+
+
+
 ```
