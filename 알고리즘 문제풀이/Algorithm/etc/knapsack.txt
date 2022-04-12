@@ -1,0 +1,63 @@
+knapsack (배낭문제)
+
+배낭 문제는 배낭에 담을 수 있는 무게의 최대 값이 정해져 있고, 일정한 가치와 무게가 정해져있는 짐들을 배낭에
+닮을 때, 가치의 함이 최대가 되도록 짐을 고르는 방법을 찾는 문제다.
+
+문제는 크게 2가지로 나뉜다
+
+1) 물건을 쪼갤 수 있는 배낭문제 (Fraction knapsack)
+-> 가치가 큰 물건 부터 담고, 남은 무게 만큼 물건을 쪼개는 방식 (greedy) 
+
+2) 물건을 쪼갤 수 없는 배낭문제 (0/1 knapsack)
+-> dp를 활용해 해결 할 수 있다
+-> dp[i][j] = Math.max(dp[i-1][j],v[i] + dp[i-1][j-w[i]]);
+
+```
+// 2차원 배열 활용 
+
+const dp = [];
+let max = 0;
+
+for(let i=0;i<n+1;i++) {
+    const tmp = [];
+    for(let j=0;j<m+1;j++) {
+        tmp.push(0);
+    }
+    dp.push(tmp);
+}
+// i번째까지의 물건, 용량 j 였을때 배낭에 들어간 물건 가치합의 최댓값
+// 1 -> n
+
+for(let i=1;i<n+1;i++) {
+    for(let j=1;j<m+1;j++) {
+        if(j-w[i]>=0) {
+            dp[i][j] = Math.max(dp[i-1][j],dp[i-1][j-w[i]]+v[i]);
+        } else {
+            dp[i][j] = dp[i-1][j];
+        }
+    }
+}
+
+return dp[n][m];
+
+
+
+// 1차원 배열 활용
+const dp = new Array(n+1).fill(0);
+
+for(let i=1;i<n+1;i++) {
+    for(let j=n;j>0;j--) {
+        if(w[i]<=j) {
+            dp[j] = Math.max(dp[j],dp[j-w[i]]+v[i]);
+        }
+    }
+}
+
+return dp[n];
+
+
+```
+
+
+
+
